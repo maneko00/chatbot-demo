@@ -4,7 +4,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import TextInput from './TextInput';
+import {TextInput} from './index';
+import {WEBHOOK_URL} from '../../webhookConfig'
 
 export default class FormDialog extends React.Component {
     constructor(props) {
@@ -30,6 +31,33 @@ export default class FormDialog extends React.Component {
 
     inputDescription = (event) => {
         this.setState({ description: event.target.value })
+    }
+
+    submitForm = (event) => {
+        const name = this.state.name
+        const email = this.state.email
+        const description = this.state.description
+        
+        const payload = {
+            text: 'お問い合わせがありました\n'
+                + 'お名前: ' + name + '\n'
+                + 'メールアドレス: ' + email + '\n'
+                + '【問い合わせ内容】\n' + description
+        };
+  
+        // fetchメソッドでフォームの内容をSlackのIncoming Webhook URL に送信する
+        fetch(WEBHOOK_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        }).then(() => {
+            alert('送信が完了しました。追ってご連絡いたします🙌');
+            this.setState = {
+                name: '',
+                email: '',
+                description: ''
+            }
+            return this.props.handleClose()
+        })
     }
 
 
@@ -60,7 +88,7 @@ export default class FormDialog extends React.Component {
                 <Button onClick={this.props.handleClose} color="primary">
                     キャンセル
                 </Button>
-                <Button onClick={this.props.handleClose} color="primary" autoFocus>
+                <Button onClick={this.submitForm} color="primary" autoFocus>
                     送信する
                 </Button>
                 </DialogActions>

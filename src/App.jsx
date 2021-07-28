@@ -2,7 +2,7 @@ import React from 'react';
 import defaultDataset from './dataset';
 import './assets/styles/style.css'
 import { AnswersList, Chats } from './components';
-import FormDialog from './components/Forms/FormDialog';
+import {FormDialog} from './components/Forms/index';
 
 export default class App extends React.Component {
   constructor(props) {
